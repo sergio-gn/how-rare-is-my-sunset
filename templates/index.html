@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Image Color Extractor</title>
+</head>
+<body>
+    <h1>Image Color Extractor</h1>
+    <form method="post" enctype="multipart/form-data">
+        <input type="file" name="file" accept="image/*" required>
+        <input type="submit" value="Submit">
+    </form>
+    {% if color_code %}
+        <h2>Average color: <span style="background-color: {{ color_code }}; color: {{ color_code }};">{{ color_code }}</span></h2>
+    {% endif %}
+</body>
+</html>
