@@ -2,15 +2,54 @@
 <html>
 <head>
     <title>Image Color Extractor</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            background-color: #fff;
+        }
+        .image-preview {
+            width: 300px;
+            height: auto;
+            margin-bottom: 10px;
+        }
+        .color-preview {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin-bottom: 10px;
+        }
+    </style>
 </head>
 <body>
-    <h1>Image Color Extractor</h1>
-    <form method="post" enctype="multipart/form-data">
-        <input type="file" name="file" accept="image/*" required>
-        <input type="submit" value="Submit">
-    </form>
-    {% if color_code %}
-        <h2>Average color: <span style="background-color: {{ color_code }}; color: {{ color_code }};">{{ color_code }}</span></h2>
-    {% endif %}
+    <div class="card">
+        {% if color_code %}
+            <div class="image-preview">
+                <img style="width:100%" src="{{ url_for('static', filename='uploads/' + image_file) }}" alt="Uploaded Image">
+            </div>
+            <div class="color-preview" style="background-color: {{ color_code }};"></div>
+            <h2>Average color: <span style="background-color: {{ color_code }}; color: #fff;">{{ color_code }}</span></h2>
+        {% endif %}
+        <!-- Rest of the template remains unchanged -->
+        {% if color_range %}
+        <h3>{{ color_range }}</h3>
+        {% endif %}
+
+        <form method="post" enctype="multipart/form-data">
+            <input type="file" name="file" accept="image/*" required>
+            <input type="submit" value="Submit">
+        </form>
+    </div>
 </body>
 </html>
