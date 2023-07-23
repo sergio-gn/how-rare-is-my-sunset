@@ -3,12 +3,13 @@
 <head>
     <title>Image Color Extractor</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0">
 </head>
 <body>
     <div class="card">
         {% if color_code %}
             <div class="image-preview">
-                <img style="width:100%" src="{{ url_for('static', filename='uploads/' + image_file) }}" alt="Uploaded Image">
+                <img style="width:100%" src="data:image/jpeg;base64,{{ image_data }}" alt="Uploaded Image">
             </div>
             <div class="color-preview" style="background-color: {{ color_code }};"></div>
             <h2>Average color: <span style="background-color: {{ color_code }}; color: #fff;">{{ color_code }}</span></h2>
@@ -18,7 +19,7 @@
         <h3>{{ color_range }}</h3>
         {% endif %}
 
-        <form method="post" enctype="multipart/form-data">
+        <form class="upload-image" method="post" enctype="multipart/form-data">
             <input type="file" name="file" accept="image/*" required>
             <input class="submit" type="submit" value="Submit">
         </form>

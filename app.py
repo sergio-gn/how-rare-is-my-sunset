@@ -5,17 +5,18 @@ import uuid
 import threading
 import time
 import math
+from io import BytesIO
+import base64
 
 app = Flask(__name__)
 app.config['MAX_CONTENT_LENGTH'] = 1 * 1500 * 1500  # 1MB in bytes
 
 # Get the absolute path of the directory where app.py is located
 current_directory = os.path.dirname(os.path.abspath(__file__))
-uploads_directory = os.path.join(current_directory, 'static', 'uploads')
 
-def get_average_color(image_path):
+def get_average_color(image_bytes):
     try:
-        img = Image.open(image_path)
+        img = Image.open(image_bytes)
         img = img.resize((1, 1))  # Resize the image to 1x1 pixel to get the average color
         img_rgb = img.convert("RGB")
         pixel = img_rgb.getpixel((0, 0))
@@ -27,11 +28,11 @@ def get_average_color(image_path):
 def rgb_to_hex(rgb):
     return "#{:02x}{:02x}{:02x}".format(rgb[0], rgb[1], rgb[2])  # Format the RGB tuple directly
 
-def delete_image(image_path):
-    print(f"Deleting image: {image_path}")
-    time.sleep(5 * 2)  # 5 minutes in seconds
-    os.remove(image_path)
-    print(f"Image deleted: {image_path}")
+def delete_image(image_bytes):
+    print(f"Deleting image...")
+    # You can handle the image bytes here as needed without saving to the disk
+    time.sleep(5)  # Sleep for 5 seconds to simulate image processing
+    print(f"Image processing completed.")
 
 def calculate_rgb_similarity(rgb1, rgb2):
     # Calculate Euclidean distance between two RGB colors
@@ -66,25 +67,27 @@ def get_color_range(rgb):
 @app.route('/', methods=['GET', 'POST'])
 def index():
     color_code = None
-    image_file = None  # Variable to store the image filename
+    image_data = None  # Variable to store the base64-encoded image data
     color_range = None  # Variable to store the color range text
 
     if request.method == 'POST':
         if 'file' in request.files:
-            image_file = f"{uuid.uuid4()}.jpg"  # Generate a unique filename for the uploaded image
-            image_path = os.path.join(uploads_directory, image_file)  # Updated path for saving the image
-            request.files['file'].save(image_path)
-            average_color = get_average_color(image_path)
+            image_bytes = request.files['file'].read()  # Read the image as bytes
+
+            average_color = get_average_color(BytesIO(image_bytes))  # Use BytesIO to handle the image as bytes
 
             if average_color:
                 color_code = rgb_to_hex(average_color)
                 color_range = get_color_range(average_color)
 
-                # Schedule image deletion as a background task
-                deletion_thread = threading.Thread(target=delete_image, args=[image_path])
-                deletion_thread.start()
+                # Convert the image bytes to base64-encoded string
+                image_data = base64.b64encode(image_bytes).decode()
 
-    return render_template('index.html', color_code=color_code, image_file=image_file, color_range=color_range)
+                # Schedule image processing as a background task
+                processing_thread = threading.Thread(target=delete_image, args=[image_bytes])
+                processing_thread.start()
+
+    return render_template('index.html', color_code=color_code, image_data=image_data, color_range=color_range)
 
 if __name__ == '__main__':
     app.run(debug=True)
