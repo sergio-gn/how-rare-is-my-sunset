@@ -2,35 +2,7 @@
 <html>
 <head>
     <title>Image Color Extractor</title>
-    <style>
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
-        .card {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-            background-color: #fff;
-        }
-        .image-preview {
-            width: 300px;
-            height: auto;
-            margin-bottom: 10px;
-        }
-        .color-preview {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            margin-bottom: 10px;
-        }
-    </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
     <div class="card">
@@ -48,8 +20,15 @@
 
         <form method="post" enctype="multipart/form-data">
             <input type="file" name="file" accept="image/*" required>
-            <input type="submit" value="Submit">
+            <input class="submit" type="submit" value="Submit">
         </form>
+        {% if color_range %}
+            <p class="disclaimer">
+                This is a robotic analysis.
+                Please don't take this result seriously since robots see the world in numbers and humans see the world with senses and feelings!
+                If you think your image is rare, it is!
+            </p>
+        {% endif %}
     </div>
 </body>
 </html>

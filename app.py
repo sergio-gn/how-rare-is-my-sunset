@@ -7,7 +7,7 @@ import time
 import math
 
 app = Flask(__name__)
-app.config['MAX_CONTENT_LENGTH'] = 1 * 1024 * 1024  # 1MB in bytes
+app.config['MAX_CONTENT_LENGTH'] = 1 * 1500 * 1500  # 1MB in bytes
 
 # Get the absolute path of the directory where app.py is located
 current_directory = os.path.dirname(os.path.abspath(__file__))
